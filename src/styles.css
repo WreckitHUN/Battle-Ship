@@ -1,0 +1,83 @@
+:root{
+  /* Color Palette */
+  --color-primary: #2584ff;
+  --color-secondary: #00D9FF;
+  --color-accent: #ff3400;
+  --color-headings: #1b0760;
+  --color-body: #918ca4;
+  --color-body-darker: #5c5577; 
+  --color-border: #ccc;
+
+  --border-radius: 30px;
+
+}
+
+*, *::after, *::before{
+  /* Keeping the width and height */
+  box-sizing: border-box;
+}
+
+/* Topography */
+html{
+  /* 62.5% of 16px is 10px */
+  font-size: 62.5%;
+}
+
+body{
+  color: var(--color-body);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+
+h1, h2, h3{
+  color: var(--color-headings);
+  line-height: 1.1;
+  
+}
+
+h1{
+  font-size: 7rem;
+}
+
+h2{
+  font-size: 4rem;
+}
+
+
+p{
+  margin-top: 0;
+}
+
+/* Layout */
+
+body{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.container{
+  display: grid;
+  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+}
+
+.cell{
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  border: 1px solid black;
+  width: 50px;
+}
+
+.cell:hover{
+  opacity: 0.2;
+}
+
+.player1 .ship{
+  background: teal;
+}
+
+.player2 .ship{
+  background: tomato;
+}
