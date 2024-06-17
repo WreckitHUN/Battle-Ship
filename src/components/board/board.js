@@ -62,17 +62,15 @@ function Board(){
 
   const receiveAttack = ([x, y]) => {
     // Attack has been made
-    if (containsArray(successfulShots, [x, y])) {console.log("Attack has been made"); return false};
+    if (containsArray(successfulShots, [x, y]) || containsArray(missedShots, [x, y])) {console.log("Attack has been made"); return false};
+    console.log("Attacking...");
     const key = `${x},${y}`;
     // It is a successful hit
     if (occupiedCoordinates.has(key)){
       const ship = occupiedCoordinates.get(key);
       ship.hit();
       successfulShots.push([x, y]);
-      // If the ship is sunk check if all the ships is sunk then return its value
-      if (ship.isSunk()) {
-        return allShipsSunk();
-      };
+      return ship;
     }else {
       missedShots.push([x, y]);
       return false;
