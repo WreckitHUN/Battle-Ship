@@ -53,7 +53,30 @@ p{
 
 body{
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.status{
+  font-size: 5rem;
+}
+
+.playingArea{
+  display: flex;
+  gap: 100px;
   justify-content: space-evenly;
+}
+
+.player1,.player2{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.btn{
+  width: max-content;
 }
 
 .container{
@@ -61,6 +84,7 @@ body{
   grid-template-rows: repeat(10, 1fr);
   grid-template-columns: repeat(10, 1fr);
   gap: 5px;
+ 
 }
 
 .cell{
@@ -81,3 +105,31 @@ body{
 .player2 .ship{
   background: tomato;
 }
+
+.ship.hit::after {
+  aspect-ratio: 1/1;
+  content: "O";
+  display: inline-block;
+  width: 60%; 
+  border-radius: 50%; 
+  background-color: red; 
+  color: transparent; 
+}
+
+.cell.miss{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ccc;
+}
+
+.cell.miss:after{
+  content: "o";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%; 
+  background-color: black; 
+  color: transparent;
+}
+

@@ -60,10 +60,21 @@ function Board(){
       return ship;
   }
 
+  const clearBoard = () => {
+    occupiedCoordinates.clear(); // This will clear all entries in the Map
+    forbiddenCoordinates.length = 0; // This will clear all elements in the Array
+    successfulShots.length = 0;
+    missedShots.length = 0;
+    placedShips.length = 0;
+    console.log('Board cleared. All ships removed.');
+  }
+
   const receiveAttack = ([x, y]) => {
     // Attack has been made
-    if (containsArray(successfulShots, [x, y]) || containsArray(missedShots, [x, y])) {console.log("Attack has been made"); return false};
-    console.log("Attacking...");
+    if (containsArray(successfulShots, [x, y]) || containsArray(missedShots, [x, y])) {
+      console.log("Attack has been made"); 
+      return 0; // { hit: true, ship: ship, message: "Hit" };
+    }
     const key = `${x},${y}`;
     // It is a successful hit
     if (occupiedCoordinates.has(key)){
@@ -94,6 +105,7 @@ function Board(){
     rows,
     columns,
     placeShip,
+    clearBoard,
     receiveAttack,
     allShipsSunk,
     getMissedShots,
