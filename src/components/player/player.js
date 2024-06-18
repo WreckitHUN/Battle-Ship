@@ -23,9 +23,8 @@ const Player = (name) => {
     };
 
     const attack = ([x, y]) => { // Returns false missed, returns ship hit
-       const hit = board.receiveAttack([x, y]);
-       console.log(hit);
-       return hit;
+       const {hit, ship, message} = board.receiveAttack([x, y]);
+       return {hit, ship, message};
     }
 
     const placeShip = (length, coord, rotated) => {

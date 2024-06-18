@@ -72,8 +72,7 @@ function Board(){
   const receiveAttack = ([x, y]) => {
     // Attack has been made
     if (containsArray(successfulShots, [x, y]) || containsArray(missedShots, [x, y])) {
-      console.log("Attack has been made"); 
-      return 0; // { hit: true, ship: ship, message: "Hit" };
+      return { hit: false, ship: undefined, message: "Made" };
     }
     const key = `${x},${y}`;
     // It is a successful hit
@@ -81,10 +80,10 @@ function Board(){
       const ship = occupiedCoordinates.get(key);
       ship.hit();
       successfulShots.push([x, y]);
-      return ship;
+      return { hit: true, ship, message: "Hit" };
     }else {
       missedShots.push([x, y]);
-      return false;
+      return { hit: false, ship: undefined, message: "Miss" };
     }
   }
 

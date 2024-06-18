@@ -18,17 +18,8 @@ const gameController = (p1, p2) => {
     }
 
     const attackPlayer = (player, [x, y]) => {
-        const hit = player.attack([x, y]);
-        // if it is not a hit return
-        if (!hit) return;
-
-        if (hit) { // hit is the hit ship
-            console.log(`${player.name}'s ship been hit`);
-            
-            return hit
-        };
-
-        return hit;
+        const {hit, ship, message} = player.attack([x, y]);
+        return {hit, ship, message};
     }
 
     function containsArray(haystack, needle) {
@@ -115,6 +106,7 @@ const screenUpdater = () => {
         // Return if not clicked on a cell
         const cell = event.target;
         if (!cell.dataset.row) return;
+        // Get the clicked coordinates
         const row = (+cell.dataset.row);
         const column = (+cell.dataset.column);
         const coord = [row, column];
@@ -123,12 +115,12 @@ const screenUpdater = () => {
             if (event.currentTarget === container1 && currentPlayer !== Player1) return;
             if (event.currentTarget === container2 && currentPlayer !== Player2) return;
             if (isPlacingShip) return;
+            isPlacingShip = true;
             const availableShips = currentPlayer.getAvailableShips();
             if (availableShips <= 0) {
                 status.textContent = "No more ship to place";
                 return;
             };
-            isPlacingShip = true;
             const ship = placeShip(currentPlayer, shipLength, coord, isRotated);
             isPlacingShip = false;
             if (!ship) {
@@ -136,28 +128,21 @@ const screenUpdater = () => {
                 return;
             }
             status.textContent = "Ship placed";
-        }else
+        } else
 
         if (currentPlayer.getAttackState()) { // Ship attacking state
             if (event.currentTarget === container1 && currentPlayer === Player1) return;
             if (event.currentTarget === container2 && currentPlayer === Player2) return;
             const attackedPlayer = currentPlayer === Player1 ? Player2 : Player1;
-            const attack = attackPlayer(attackedPlayer, coord);
+            const {hit, ship, message} = attackPlayer(attackedPlayer, coord);
             
-            if (!attack){ // attack is (false) or the (hit ship)
+            if (!hit && message === "Miss"){
                 togglePlayer();
-                console.log("Miss");
-                // If AI is enabled
                 if (isAgainstAI){
-                    console.log("AI attacking...");
-                    let aiHit = true;
-                    while (aiHit){
-                        aiHit = aiAttack(currentPlayer);
-                        if (!aiHit) togglePlayer();
-                    }
-                    
+                    aiAttack(currentPlayer);
+                    togglePlayer();
                 }
-            }
+           }
         }
     }
 
@@ -181,12 +166,14 @@ const screenUpdater = () => {
 
     function aiAttack(player){
         const attackedPlayer = player === Player1 ? Player2 : Player1;
-        const x = Math.floor(Math.random() * rows);
-        const y = Math.floor(Math.random() * columns);
-        let aiattack = 0;
-        while (aiattack === 0){
-            aiattack = attackPlayer(attackedPlayer, [x, y]);
-            console.log(aiattack);
+        let _message = "Made";
+        let _hit = true;
+        while (_message === "Made" || _hit){
+            const x = Math.floor(Math.random() * rows);
+            const y = Math.floor(Math.random() * columns);
+            const {hit, ship, message} = attackPlayer(attackedPlayer, [x, y]);
+            _message = message;
+            _hit = hit;
         }
     }
 
@@ -194,12 +181,12 @@ const screenUpdater = () => {
     function attackPlayer(player, [x, y]){
         const cells = player === Player1 ? player1Cells : player2Cells;
         const hitCell = cells.find((cell) => +cell.dataset.row === x && +cell.dataset.column === y);
-        const hit = game.attackPlayer(player, [x, y]);
+        const {hit, ship, message} = game.attackPlayer(player, [x, y]);
         if (hit){
             // [x, y] is a successful hit
             hitCell.classList.add("hit");
             // Check if the ship is sunk
-            if (hit.isSunk()) {
+            if (ship.isSunk()) {
                 console.log(`${player.name}'s ship been sunk`);
                 // Also check if all the ships have been sunk GAME OVER
                 if (player.hasLost()) {
@@ -207,11 +194,17 @@ const screenUpdater = () => {
                     console.log(`${player.name} lost the game`);
                 }
             }
-            return hit;
-        } else {
+            console.log(message);
+            return {hit, ship, message};
+        } else if(message === "Miss") {
             // [x, y] is a miss
             hitCell.classList.add("miss");
-            return hit;
+            console.log(message);
+            return {hit, ship, message};
+        } else if (message === "Made"){
+            // [x, y] is made earlier
+            console.log(message);
+            return {hit, ship, message};
         }
     }
 
@@ -261,6 +254,7 @@ const screenUpdater = () => {
 
     function clearBoard(player){
         player.clearBoard();
+        isPlacingShip = false;
         const cells = player === Player1 ? player1Cells : player2Cells;
         cells.forEach((cell) => cell.classList.remove("ship", "hit", "miss"));
     }

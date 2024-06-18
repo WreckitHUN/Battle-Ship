@@ -103,7 +103,7 @@ body{
 }
 
 .player2 .ship{
-  background: tomato;
+  /*background: tomato;*/
 }
 
 .ship.hit::after {
